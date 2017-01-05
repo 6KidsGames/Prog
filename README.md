@@ -31,7 +31,7 @@ each day, unless you're in the middle of something.
 1. (If you don't already have a console open) Open a Windows console: Windows+R (to open the Run box), then type `cmd` and press Enter.
 1. Change location to that folder: `cd c:\Prog`
 1. Create some useful console shortcuts: `init`
-1. See if you have any files changed locally, and if you're in a working branch: `stat` .
+1. See if you have any files changed locally, and if you're in a working branch: `stat`
 1. If you are not on the `master` branch, run `git checkout master`
 1. If "package.json" is listed in red, run `git checkout -- package.json`
 1. If you have other files changed, get it committed and `git checkout master`, or talk to the teacher.
@@ -46,11 +46,18 @@ To run Jupyter we have a script command that you run from within your c:\Prog fo
 
 ## Every day - Creating and Running JavaScript Code
 We also create our own JavaScript code using Visual Studio Code, and run it with node.js.
+
 To edit your code:
 
 1. Change to your user directory:  `cd c:\Prog\users\<your-user-name>`  (Obviously, replace <your-user-name> with the folder name for yourself.)
 1. Run Visual Studio Code in that directory:  `code .`
-1. If you need to create a new JAvaScript program file, use the File menu's New command, then save the resulting file with a new filename as directed during class.
+1. If you need to create a new JavaScript program file, use the File menu's New command, then save the resulting file with a new filename as directed during class. Use the ".js" extension which is the extension for JavaScript.
+
+To run your code:
+
+1. Alt+Tab back to the cmd console window
+1. Use NodeJS to run your code:  `node myfile.js`
+   For example:  `node Arrays.js`
 
 ## Every day - Pushing Your Results to the Repo on GitHub
 Unlike our other code projects like ZombAttack, all users in class can push to the cloud. So all you need to do is to check in your changes to master, then push to the cloud, and pull back again to get the latest code.
