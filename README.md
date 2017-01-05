@@ -2,7 +2,7 @@
 
 ![6KidsGames Logo](https://github.com/6KidsGames/ZombAttack/blob/master/Sprites/6KidsLogo.png "6KidsGames")
 
-Programming problems, done within a repo for use of pull requests.
+Programming problems, done within a repo so we can all see each other's code and the teacher can grade your results.
 
 # Using This Repo
 

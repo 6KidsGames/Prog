@@ -18,7 +18,7 @@
     "start": "ijs"
   },
   "engines": {
-    "node": ">= 6.9.1"
+    "node": ">= 7.4"
   },
   "license": "MIT"
 }
