@@ -55,5 +55,4 @@ To edit your code:
 ## Every day - Pushing Your Results to the Repo on GitHub
 Unlike our other code projects like ZombAttack, all users in class can push to the cloud. So all you need to do is to check in your changes to master, then push to the cloud, and pull back again to get the latest code.
 
-You can do this quickly using the helper script in c:\Prog: `PushMyWork`
- 
+You can do this quickly using the helper script in c:\Prog:  `PushMyWork`
