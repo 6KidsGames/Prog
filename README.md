@@ -42,7 +42,7 @@ each day, unless you're in the middle of something.
 When we are using Jupyter notebooks, you need to run the Jupyter server, which uses Node.js.
 To run Jupyter we have a script command that you run from within your c:\Prog folder:
 
- jupyter
+ `jupyter`
 
 ## Every day - Creating and Running JavaScript Code
 We also create our own JavaScript code using Visual Studio Code, and run it with node.js.
