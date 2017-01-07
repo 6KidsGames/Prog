@@ -1,0 +1,24 @@
+{
+  "name": "Prog",
+  "description": "6KidsGames learning repo",
+  "version": "1.0.0",
+  "homepage": "https://github.com/6KidsGames/Prog",
+  "repository": "https://github.com/6KidsGames/Prog.git",
+  "author": "6 Kids Games https://github.com/6KidsGames",
+  "tags": [],
+  "files": [],
+  "bin": {},
+  "man": "",
+  "start": "ijs",
+  "dependencies": {},
+  "devDependencies": {
+    "ijavascript": "^5.0.16"
+  },
+  "scripts": {
+    "start": "ijs"
+  },
+  "engines": {
+    "node": ">= 7.4"
+  },
+  "license": "MIT"
+}
