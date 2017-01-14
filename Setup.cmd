@@ -16,9 +16,10 @@ echo.
 echo ==========================================================================
 echo Installing learning packages for Node.js
 echo   ijavascript - Lets us use JavaScript within Jupyter notebooks.
+echo   prompt-sync - Lets us get user input at the console
 echo ==========================================================================
 echo.
-call npm install --save-dev ijavascript
+call npm install --save-dev ijavascript prompt-sync
 if ERRORLEVEL 1 echo ERROR: npm install failed for leaning modules with errorlevel %ERRORLEVEL% && exit /b 1
 
 
