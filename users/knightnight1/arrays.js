@@ -1,5 +1,6 @@
 
 var a = [1, 2, 3]
+
 console.log(a);
 a.forEach(n  => console.log(n));
 
@@ -22,9 +23,7 @@ var v = [[[1, 2, 3], [4, 5, 6]],
 
 
 
-
 drawboard(b);
-
 
 
 function drawboard(b){
