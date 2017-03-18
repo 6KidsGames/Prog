@@ -12,7 +12,7 @@
   "start": "ijs",
   "dependencies": {},
   "devDependencies": {
-    "ijavascript": "^5.0.16",
+    "ijavascript": "^5.0.18",
     "prompt-sync": "^4.1.4"
   },
   "scripts": {

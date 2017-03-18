@@ -1,28 +1,39 @@
 const prompt = require('prompt-sync')();
 
-var playerTurn = "o";
+var playerTurn = "x";
+
+var players = {
+    "x":{
+        isAi : false,
+        AiLevel : 1,
+        moveGenerator: getHumanMove
+    },
+    "o":{
+        isAi:false,
+        AiLevel : 1,
+        moveGenerator: getHumanMove
+    }
+};
+
 var numPlayers;
 while (true){
     numPlayers = prompt("enter number of players 0 for ai vs ai 1 for you vs ai 2 for player vs player");
     numPlayers = Number(numPlayers);
     if (numPlayers >= 0 &&
-        numPlayers  <= 2){
-            break;
-        }
-        console.log("u $uk @ lot dud")
-} 
-
-var players = {
-    "x" : { isAi: false },
-    "o" : { isAI: false }
+        numPlayers  <= 2) {
+        break;
+    }
+    console.log("u $uk @ lot dud")
 }
-if (numPlayers === 1){
+
+if (numPlayers === 1) {
     var humanIsX;
     while (true) {
         humanIsX = prompt("are you x y/n ");
         if (humanIsX === "y") {
-                humanIsX = true;
-                break;
+            
+            humanIsX = true;
+            break;
         }
         if (humanIsX === "n"){
             humanIsX = false;
@@ -32,63 +43,81 @@ if (numPlayers === 1){
     }
     if (humanIsX) {
         players["o"].isAi = true;
+        players["o"].AiLevel = getAiLevel["o"];
+        players["o"].moveGenerator = level1AiGetMove;
 
-    }else {
+    } else {
         players["x"].isAI = true;
-    } 
+        players["x"].AiLevel = getAiLevel["o"];
+        players["x"].moveGenerator = level1AiGetMove;
+    }
 }
 if (numPlayers === 0){
     players["x"].isAi = true;
+    players["x"].AiLevel = getAiLevel["o"];
+    players["x"].moveGenerator = level1AiGetMove;
+
     players["o"].isAI = true;
+    players["o"].AiLevel = getAiLevel["o"];
+    players["o"].moveGenerator = level1AiGetMove;
 }
+
 console.log("hello user this is tic tac toe the other person is going to kick your butt. type q to exit");
 
 var board = [[" ", " ", " "],
             [" ", " ", " "],
             [" ", " ", " " ]];
 
+//GGGGGGGGGGGGGGGGGGGGGGAAAAAAAAAAAAAAAAAMMMMMMMMMMMMMEEEEEEEEEEEEEEEEEE LLLLLLLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPPPPPPPPPP
 while (true) {
-   
     console.log(`${playerTurn} turn`);
-    var row;
-    var col;
-    while (true){
-        row = getRowOrCol("row");
-        col = getRowOrCol("column");
-        if (!isMoveAllowed(board, row, col)){
-            console.log("u suck a lot dud")
-        }
-        else{
-            break;
-        }
-    }
-    
+    var rc = players[playerTurn].moveGenerator();
+    var row = rc[0];
+    var col = rc[1];
+   
     console.log(`${row},${col}`);
-    board[row - 1][col - 1] = playerTurn;
+    board[row][col] = playerTurn;
     drawboard(board);
     var win = checkWin(board);
-        if(win !== null){
-            if(win === "stalemate"){
-                console.log("stalemate! u suk a lot dud");
-                process.exit(0);
-            } else {
-                console.log(`${win} won`)
+    if (win !== null){
+        if(win === "stalemate"){
+            console.log("stalemate! u suk a lot dud");
+        } else {
+            console.log(`${win} won`)
+        }
+        process.exit(0);
+    }
+
+    if (playerTurn === "o"){
+        playerTurn = "x";
+    } else {
+        playerTurn= "o";
+    }
+}
+
+function level1AiGetMove() {
+    //genorate a random
+    for (var row = 0; row <3; row++) {
+        for (var col = 0; col <3; col++) {
+            if (board[row][col] === " "){
+                return [row, col];
             }
-            
-        
-        
+        }
     }
-    
+    return [0,0];
+}
 
+function getAiLevel(player){
+    var level;
+    while (true){
+        level = prompt(`what level for AI ${player}?`);
+        level = Number(level);
+        if (level >= 1&&
+            level <= 2){
+            return level;
 
-
-    if(playerTurn === "o"){
-            playerTurn = "x"
-        
-    }
-
-    else{
-            playerTurn= "o"
+        }
+        console.log("u $uk @ lot dud");
     }
 }
 
@@ -121,7 +150,6 @@ function checkWin(b) {
     if (checkDownRightDiag(b, "o") ||
         checkUpLeftDiag(b, "o")) {
         return "o";
-        
     }
 
     var numSpaces = 0;
@@ -204,10 +232,24 @@ function checkDownRightDiag(b, piece){
 }
 
 function checkUpLeftDiag(b, piece){
-    if (b[0][2] === piece &&
+    if (b[2][0] === piece &&
         b[1][1] === piece &&
-        b[0][3] === piece) {
+        b[0][2] === piece) {
         return piece;
     }
     return null;
+}
+
+function getHumanMove(){
+    while (true){
+        row = getRowOrCol("row");
+        col = getRowOrCol("column");
+        if (!isMoveAllowed(board, row, col)){
+            console.log("u suck a lot dud")
+        }
+        else{
+            break;
+        }
+    }
+    return [row - 1, col - 1];
 }
