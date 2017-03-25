@@ -44,22 +44,22 @@ if (numPlayers === 1) {
     if (humanIsX) {
         players["o"].isAi = true;
         players["o"].AiLevel = getAiLevel["o"];
-        players["o"].moveGenerator = level1AiGetMove;
+        players["o"].moveGenerator = randomMoveAI;
 
     } else {
         players["x"].isAI = true;
         players["x"].AiLevel = getAiLevel["o"];
-        players["x"].moveGenerator = level1AiGetMove;
+        players["x"].moveGenerator = randomMoveAI;
     }
 }
 if (numPlayers === 0){
     players["x"].isAi = true;
     players["x"].AiLevel = getAiLevel["o"];
-    players["x"].moveGenerator = level1AiGetMove;
+    players["x"].moveGenerator = randomMoveAI;
 
     players["o"].isAI = true;
     players["o"].AiLevel = getAiLevel["o"];
-    players["o"].moveGenerator = level1AiGetMove;
+    players["o"].moveGenerator = randomMoveAI;
 }
 
 console.log("hello user this is tic tac toe the other person is going to kick your butt. type q to exit");
@@ -75,7 +75,7 @@ while (true) {
     var row = rc[0];
     var col = rc[1];
    
-    console.log(`${row},${col}`);
+    console.log(`${row + 1},${col + 1}`);
     board[row][col] = playerTurn;
     drawboard(board);
     var win = checkWin(board);
@@ -252,4 +252,19 @@ function getHumanMove(){
         }
     }
     return [row - 1, col - 1];
+}
+
+function randomMoveAI() {
+    var row;
+    var col;
+    do
+    {
+        row = getRandomInt(0, 2);
+        col = getRandomInt(0, 2);
+    } while (board[row][col] !== " ");
+    return [row, col];
+}
+
+function getRandomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
