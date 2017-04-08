@@ -1,3 +1,5 @@
+"use strait"
+
 const prompt = require('prompt-sync')();
 
 var playerTurn = "x";
@@ -44,22 +46,22 @@ if (numPlayers === 1) {
     if (humanIsX) {
         players["o"].isAi = true;
         players["o"].AiLevel = getAiLevel["o"];
-        players["o"].moveGenerator = randomMoveAI;
+        players["o"].moveGenerator = scoreBoardAi;
 
     } else {
         players["x"].isAI = true;
         players["x"].AiLevel = getAiLevel["o"];
-        players["x"].moveGenerator = randomMoveAI;
+        players["x"].moveGenerator = scoreBoardAi;
     }
 }
 if (numPlayers === 0){
     players["x"].isAi = true;
     players["x"].AiLevel = getAiLevel["o"];
-    players["x"].moveGenerator = randomMoveAI;
+    players["x"].moveGenerator = scoreBoardAi;
 
     players["o"].isAI = true;
     players["o"].AiLevel = getAiLevel["o"];
-    players["o"].moveGenerator = randomMoveAI;
+    players["o"].moveGenerator = scoreBoardAi;
 }
 
 console.log("hello user this is tic tac toe the other person is going to kick your butt. type q to exit");
@@ -71,7 +73,7 @@ var board = [[" ", " ", " "],
 //GGGGGGGGGGGGGGGGGGGGGGAAAAAAAAAAAAAAAAAMMMMMMMMMMMMMEEEEEEEEEEEEEEEEEE LLLLLLLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPPPPPPPPPP
 while (true) {
     console.log(`${playerTurn} turn`);
-    var rc = players[playerTurn].moveGenerator();
+    var rc = players[playerTurn].moveGenerator(board, playerTurn);
     var row = rc[0];
     var col = rc[1];
    
@@ -95,7 +97,7 @@ while (true) {
     }
 }
 
-function level1AiGetMove() {
+function level1AiGetMove(b, piece) {
     //genorate a random
     for (var row = 0; row <3; row++) {
         for (var col = 0; col <3; col++) {
@@ -184,6 +186,76 @@ function checkCompleteCol(b, col, piece){
     }
     return null;
 }
+function scoreRow (b, row, piece){
+    var score = 0;
+    var numOpponent = 0;
+    var numSelf = 0;
+    for (var col = 0 ; col < 3; col++){
+        if (b [row][col] === piece){
+            numSelf++;
+        }
+        else if (b [row][col]!== " "){
+            numOpponent++;
+        }
+    }
+    if (numOpponent === 2 && numSelf === 1){
+        score += 100
+    }
+    
+    else if (numOpponent > 0){
+        score -= 1;
+    }else if (numSelf === 1){
+        score += 1
+    }else if (numSelf === 2){
+        score += 4;
+    }
+    else if (numSelf === 3){
+        score += 200;
+    }
+    console.log (`scoreRow: row ${row} score ${score}`);
+        return score;
+}
+
+function scoreCol (b,col,piece){
+    var score = 0;
+    var numOpponent = 0;
+    var numSelf = 0;
+    for (var row = 0 ; row < 3; row++){
+        if (b [row][col] === piece){
+            numSelf++;
+        }
+        else if (b [row][col]!== " "){
+            numOpponent++;
+        }
+    }
+    if (numOpponent === 2 && numSelf){
+        score += 100;
+    }
+    else if (numOpponent > 0){
+        score -= 1;
+    }else if (numSelf === 1){
+        score += 1
+    }else if (numSelf === 2){
+        score += 4;
+    }
+    else if (numSelf === 3){
+        score += 200;
+    }
+    console.log (`scoreCol: col ${col} score ${score}`);
+    return score;
+}
+
+function scoreBoard(b,piece){
+    var score = 0;
+    score += scoreRow(b, 0, piece);
+    score += scoreRow(b, 1, piece);
+    score += scoreRow(b, 2, piece);
+    score += scoreCol(b, 0, piece);
+    score += scoreCol(b, 1, piece);
+    score += scoreCol(b, 2, piece);
+    console.log (`scoreboard:  ${board} score ${score}`);
+    return score;
+}
 
 function drawboard(b) {
     console.log(` ${b[0][0]} | ${b[0][1]} | ${b[0][2]}`);
@@ -254,7 +326,7 @@ function getHumanMove(){
     return [row - 1, col - 1];
 }
 
-function randomMoveAI() {
+function randomMoveAI(b, piece) {
     var row;
     var col;
     do
@@ -268,3 +340,24 @@ function randomMoveAI() {
 function getRandomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
+
+function scoreBoardAi (b, piece) {
+    var rc = [];
+    var bestScore = -10000000000000000000000000000
+    for (var row = 0; row <3;row++){
+        for(var col = 0; col<3;col++){
+            if (b[row][col] === " ") {
+                console.log(`scoreBoardAi: ${row}, ${col}`);
+                b[row][col] = piece;
+                var score = scoreBoard(b, piece);
+                b[row][col] = " ";
+                if (score > bestScore){
+                    bestScore = score;
+                    rc = [row, col];
+                }
+            }
+
+        }
+    }
+    return rc;
+    }
