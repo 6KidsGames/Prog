@@ -1,9 +1,17 @@
-"use strait"
+"use strict"
 
 const prompt = require('prompt-sync')();
 
-var playerTurn = "x";
+var aiFunctions = [
+    level1AiGetMove, randomMoveAI, scoreBoardAi, lookAHead
+]
+var board = [[" ", " ", " "],
+            [" ", " ", " "],
+            [" ", " ", " " ]];
 
+
+var playerTurn = "x";
+var otherPlayer = "o";
 var players = {
     "x":{
         isAi : false,
@@ -45,39 +53,35 @@ if (numPlayers === 1) {
     }
     if (humanIsX) {
         players["o"].isAi = true;
-        players["o"].AiLevel = getAiLevel["o"];
-        players["o"].moveGenerator = scoreBoardAi;
+        players["o"].AiLevel = getAiLevel("o");
+        players["o"].moveGenerator = aiFunctions[players["o"].AiLevel - 1];
 
     } else {
         players["x"].isAI = true;
-        players["x"].AiLevel = getAiLevel["o"];
-        players["x"].moveGenerator = scoreBoardAi;
+        players["x"].AiLevel = getAiLevel("x");
+        players["x"].moveGenertor = aiFunctions[players["x"].AiLevel - 1];
     }
 }
 if (numPlayers === 0){
     players["x"].isAi = true;
-    players["x"].AiLevel = getAiLevel["o"];
-    players["x"].moveGenerator = scoreBoardAi;
+    players["x"].AiLevel = getAiLevel("x");
+    players["x"].moveGenerator = aiFunctions[players["x"].AiLevel - 1];
 
     players["o"].isAI = true;
-    players["o"].AiLevel = getAiLevel["o"];
-    players["o"].moveGenerator = scoreBoardAi;
+    players["o"].AiLevel = getAiLevel("o");
+    players["o"].moveGenerator = aiFunctions[players["o"].AiLevel - 1];
 }
 
 console.log("hello user this is tic tac toe the other person is going to kick your butt. type q to exit");
 
-var board = [[" ", " ", " "],
-            [" ", " ", " "],
-            [" ", " ", " " ]];
-
 //GGGGGGGGGGGGGGGGGGGGGGAAAAAAAAAAAAAAAAAMMMMMMMMMMMMMEEEEEEEEEEEEEEEEEE LLLLLLLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOPPPPPPPPPP
 while (true) {
     console.log(`${playerTurn} turn`);
-    var rc = players[playerTurn].moveGenerator(board, playerTurn);
+    var rc = players[playerTurn].moveGenerator(board, playerTurn, otherPlayer, 2);
     var row = rc[0];
     var col = rc[1];
    
-    console.log(`${row + 1},${col + 1}`);
+    //console.log(`${row + 1},${col + 1}`);
     board[row][col] = playerTurn;
     drawboard(board);
     var win = checkWin(board);
@@ -90,12 +94,10 @@ while (true) {
         process.exit(0);
     }
 
-    if (playerTurn === "o"){
-        playerTurn = "x";
-    } else {
-        playerTurn= "o";
-    }
-}
+    var temp = playerTurn;
+    playerTurn = otherPlayer;
+    otherPlayer = temp;
+}    
 
 function level1AiGetMove(b, piece) {
     //genorate a random
@@ -112,12 +114,11 @@ function level1AiGetMove(b, piece) {
 function getAiLevel(player){
     var level;
     while (true){
-        level = prompt(`what level for AI ${player}?`);
+        level = prompt(`what level for AI  1-${aiFunctions.length}${player}?`);
         level = Number(level);
         if (level >= 1&&
-            level <= 2){
+            level <= aiFunctions.length){
             return level;
-
         }
         console.log("u $uk @ lot dud");
     }
@@ -212,7 +213,7 @@ function scoreRow (b, row, piece){
     else if (numSelf === 3){
         score += 200;
     }
-    console.log (`scoreRow: row ${row} score ${score}`);
+    //console.log (`scoreRow: row ${row} score ${score}`);
         return score;
 }
 
@@ -241,7 +242,7 @@ function scoreCol (b,col,piece){
     else if (numSelf === 3){
         score += 200;
     }
-    console.log (`scoreCol: col ${col} score ${score}`);
+    //console.log (`scoreCol: col ${col} score ${score}`);
     return score;
 }
 
@@ -253,7 +254,7 @@ function scoreBoard(b,piece){
     score += scoreCol(b, 0, piece);
     score += scoreCol(b, 1, piece);
     score += scoreCol(b, 2, piece);
-    console.log (`scoreboard:  ${board} score ${score}`);
+    //console.log (`scoreboard:  ${board} score ${score}`);
     return score;
 }
 
@@ -343,11 +344,11 @@ function getRandomInt(min, max) {
 
 function scoreBoardAi (b, piece) {
     var rc = [];
-    var bestScore = -10000000000000000000000000000
-    for (var row = 0; row <3;row++){
-        for(var col = 0; col<3;col++){
+    var bestScore = -1000000000;
+    for (var row = 0; row < 3; row++){
+        for(var col = 0; col < 3; col++){
             if (b[row][col] === " ") {
-                console.log(`scoreBoardAi: ${row}, ${col}`);
+                //console.log(`scoreBoardAi: ${row}, ${col}`);
                 b[row][col] = piece;
                 var score = scoreBoard(b, piece);
                 b[row][col] = " ";
@@ -356,8 +357,96 @@ function scoreBoardAi (b, piece) {
                     rc = [row, col];
                 }
             }
-
         }
     }
     return rc;
+}
+
+function copyBoard(b) {
+    var newBoard = [
+        [ b[0][0], b[0][1], b[0][2] ],
+        [ b[1][0], b[1][1], b[1][2] ],
+        [ b[2][1], b[2][1], b[2][2] ],
+    ];
+    return newBoard;
+}
+
+function createGameTreeTier(b, currentPlayer) {
+    var boards = [];
+    for (var row = 0; row < 3; row++) {
+        for (var col = 0; col < 3; col++) {
+            if (b[row][col] === " ") {
+                var newBoard = copyBoard(b);
+                newBoard.row = row;
+                newBoard.col = col;
+                newBoard[row][col] = currentPlayer;
+                boards.push(newBoard);
+            }
+        }
     }
+    console.log(`Generated ${boards.length} children`)
+    return boards;
+}
+
+function lookAHead(b, piece, otherPiece, depth) {
+    depth = 9;
+    console.log(`Generating game tree to depth ${depth}`)
+    generateGameTree(b, piece, otherPiece, depth);
+    scoreTree(b, piece, otherPiece);
+
+    var rc = findBestMove(b, depth, true);
+    console.log(`Found best move as ${rc.row},${rc.col} with score ${rc.score}`)
+    return [rc.row, rc.col];
+}
+
+function generateGameTree(b, piece, otherPiece, depth) {
+    b.children = createGameTreeTier(b, piece, otherPiece);
+    if (depth > 0 ) {
+        b.children.forEach (c => {
+            generateGameTree(c, otherPiece, piece, depth -1)
+        });
+    }    
+}
+
+function scoreTree (b, piece, otherPiece) {
+    b.score = scoreBoard(b, piece);
+    if (b.children) {
+        b.children.forEach(c => {
+            scoreTree(c, otherPiece, piece);
+        })
+    }
+}
+
+function findBestMove(b, depth, isMaximizing) {
+    console.log(`Entered findBestMove with depth ${depth}, isMax ${isMaximizing}, self move ${b.row},${b.col}`)
+    var bestBoard;
+    if (depth === 0 || !b.children || b.children.length === 0) {
+        console.log(`Reached depth ${depth}, returning leaf node with score ${b.score}`);
+        return b;
+    }
+    else {
+        var bestScore;
+        if (isMaximizing) {
+            bestScore = -1000000;
+            b.children.forEach(c => {
+                var rc = findBestMove(c, depth - 1, false);
+                if (rc.score > bestScore) {
+                    bestBoard = c;
+                    bestScore = rc.score;
+                }
+            });
+        } else {
+            bestScore = 1000000;
+            b.children.forEach(c => {
+                var rc = findBestMove(c, depth - 1, true);
+                if (rc.score < bestScore) {
+                    bestBoard = c;
+                    bestScore = rc.score;
+                }
+            });
+        }
+        console.log(`Found best child score ${bestScore}, returning child with move ${bestBoard.row},${bestBoard.col}`);
+        bestBoard.score = bestScore;
+    }
+    return bestBoard;
+}
